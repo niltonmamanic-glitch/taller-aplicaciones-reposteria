@@ -1,43 +1,51 @@
-from flask import current_app, render_template
+from flask_appbuilder import ModelView
+from flask_appbuilder.models.sqla.interface import SQLAInterface
 
-"""
-    Create your Model based REST API::
-
-    class MyModelApi(ModelRestApi):
-        datamodel = SQLAInterface(MyModel)
-
-    appbuilder.add_api(MyModelApi)
+from .models import Categoria, Ingrediente
+from .extensions import appbuilder
 
 
-    Create your Views::
+class CategoriaView(ModelView):
+    datamodel = SQLAInterface(Categoria)
+
+    list_columns = [
+        "id", "nombre", "descripcion", "activo"
+    ]
+
+    add_columns = [
+        "nombre", "descripcion", "activo"
+    ]
+
+    edit_columns = add_columns
+    show_columns = list_columns
 
 
-    class MyModelView(ModelView):
-        datamodel = SQLAInterface(MyModel)
+class IngredienteView(ModelView):
+    datamodel = SQLAInterface(Ingrediente)
+
+    list_columns = [
+        "id", "nombre", "costo",
+        "categoria", "activo"
+    ]
+
+    add_columns = [
+        "nombre", "costo", "categoria", "activo"
+    ]
+
+    edit_columns = add_columns
+    show_columns = list_columns
 
 
-    Next, register your Views on create_app Flask factory::
+appbuilder.add_view(
+    CategoriaView,
+    "Categorías",
+    icon="fa-folder",
+    category="Repostería"
+)
 
-
-    appbuilder.add_view(
-        MyModelView,
-        "My View",
-        icon="fa-folder-open-o",
-        category="My Category",
-        category_icon='fa-envelope'
-    )
-"""
-
-"""
-    Application wide 404 error handler
-"""
-
-
-@current_app.errorhandler(404)
-def page_not_found(e):
-    return (
-        render_template(
-            "404.html", base_template=appbuilder.base_template, appbuilder=appbuilder
-        ),
-        404,
-    )
+appbuilder.add_view(
+    IngredienteView,
+    "Ingredientes",
+    icon="fa-list",
+    category="Repostería"
+)
